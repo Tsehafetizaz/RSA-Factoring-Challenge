@@ -1,41 +1,29 @@
-#!/usr/bin/python3
 import sys
 
 
 def factorize(n):
-    factors = []
-    i = 2
-    while i * i <= n:
-        if n % i:
-            i += 1
-        else:
-            n //= i
-            factors.append(i)
-    if n > 1:
-        factors.append(n)
-    return factors
+    for i in range(2, n):
+        if n % i == 0:
+            return i, n // i
+        return 1, n
 
 
-if len(sys.argv) != 2:
-    print("Usage: python factors.py <file>")
-    sys.exit(1)
+def main(file_path):
+    try:
+        with open(file_path, 'r') as file:
+            numbers = file.readlines()
+            for number in numbers:
+                num = int(number.strip())
+                p, q = factorize(num)
+                print(f"{num}={p}*{q}")
+    except FileNotFoundError:
+        print(f"File not found: {file_path}")
+    except Exception as e:
+        print(f"An error occurred: {e}")
 
-input_file = sys.argv[1]
 
-try:
-    with open(input_file, 'r') as file:
-        for line in file:
-            n = int(line.strip())
-            factors = factorize(n)
-            if len(factors) >= 2:
-                p = factors[0]
-                q = n // p
-                print(f"{n}={p}*{q}")
-
-except FileNotFoundError:
-    print(f"File '{input_file}' not found.")
-    sys.exit(1)
-
-except ValueError:
-    print("Invalid input. All lines contain natural numbers greater than 1.")
-    sys.exit(1)
+if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        print("Usage: factors <file>")
+    else:
+        main(sys.argv[1])
